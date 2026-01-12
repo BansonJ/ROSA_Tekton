@@ -1,0 +1,11 @@
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerBinding
+metadata:
+  name: git-push-binding
+  namespace: tektontest
+spec:
+  params:
+    - name: git_url
+      value: $(body.repository.clone_url)
+    - name: image_tag
+      value: $(extensions.image_tag)

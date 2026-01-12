@@ -1,0 +1,48 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: unified-build-task
+  namespace: tektontest
+spec:
+  params:
+    - name: GIT_URL
+    - name: IMAGE_TAG
+
+  workspaces:
+    - name: source-workspace
+
+  steps:
+   # git clone step
+    - name: clone
+      image: alpine/git
+      script: |
+        cd $(workspaces.source-workspace.path)
+        rm -rf ./*
+        git clone $(params.GIT_URL) .
+
+   # 내부 registry로의 build and push step
+    - name: build-and-push
+      image: gcr.io/kaniko-project/executor:latest
+      workingDir: $(workspaces.source-workspace.path)
+      env:
+        - name: DOCKER_CONFIG
+          # Kaniko가 인증 파일을 찾을 경로
+          value: /kaniko/.docker
+      args:
+        - --context=dir://$(workspaces.source-workspace.path)
+        - --dockerfile=Dockerfile
+        - --destination=image-registry.openshift-image-registry.svc:5000/tektontest/quizapp:$(params.IMAGE_TAG)
+        - --destination=image-registry.openshift-image-registry.svc:5000/tektontest/quizapp:latest
+        - --skip-tls-verify-registry=image-registry.openshift-image-registry.svc:5000
+      volumeMounts:
+        - name: registry-auth
+          mountPath: /kaniko/.docker
+          readOnly: true
+
+  volumes:
+    - name: registry-auth
+      secret:
+        secretName: internal-registry-secret  # registry 시크릿 이름
+        items:
+          - key: .dockerconfigjson
+            path: config.json

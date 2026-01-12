@@ -1,0 +1,23 @@
+apiVersion: triggers.tekton.dev/v1beta1
+kind: EventListener
+metadata:
+  name: auto-deploy-listener
+  namespace: tektontest
+spec:
+  serviceAccountName: tekton-triggers-sa
+  triggers:
+    - name: git-tag-push-trigger
+      interceptors:
+        - ref:
+            name: cel
+          params:
+            - name: filter
+              value: "body.ref.startsWith('refs/tags/')"
+            - name: overlays
+              value:
+                - key: image_tag
+                  expression: "body.ref.replace('refs/tags/', '')"
+      bindings:
+        - ref: git-push-binding
+      template:
+        ref: auto-deploy-template

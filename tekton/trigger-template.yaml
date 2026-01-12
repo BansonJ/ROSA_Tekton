@@ -1,0 +1,27 @@
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerTemplate
+metadata:
+  name: auto-deploy-template
+  namespace: tektontest
+spec:
+  params:
+    - name: git_url
+    - name: image_tag
+  resourcetemplates:          # pipelinerun resource 생성
+    - apiVersion: tekton.dev/v1beta1
+      kind: PipelineRun
+      metadata:
+        generateName: auto-deploy-run-
+        namespace: tektontest
+      spec:
+        pipelineRef:
+          name: auto-deploy-pipeline
+        serviceAccountName: pipeline
+        params:
+          - name: GIT_URL
+            value: $(tt.params.git_url)
+          - name: IMAGE_TAG
+            value: $(tt.params.image_tag)
+        workspaces:
+          - name: shared-workspace
+            emptyDir: {}

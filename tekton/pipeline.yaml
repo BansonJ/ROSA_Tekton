@@ -1,0 +1,23 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: auto-deploy-pipeline
+  namespace: tektontest
+spec:
+  params:
+    - name: GIT_URL
+    - name: IMAGE_TAG
+  workspaces:
+    - name: shared-workspace
+  tasks:
+    - name: build-process
+      taskRef:
+        name: unified-build-task
+      params:
+        - name: GIT_URL
+          value: $(params.GIT_URL)
+        - name: IMAGE_TAG
+          value: $(params.IMAGE_TAG)
+      workspaces:
+        - name: source-workspace
+          workspace: shared-workspace
