@@ -1,9 +1,9 @@
 <div align= "center">
-    <img src="https://capsule-render.vercel.app/api?type=cylinder&color=auto&height=120&text=K8S와%20ansible을%20이용한%20간단한%20app%20배포&animation=&fontColor=000000&fontSize=30" />
+    <h1 style="border-bottom: 1px solid #d8dee4; color: #282d33;"> ROSA를 사용한 OpenShift 내부 구현 </h1>  
     </div>
     <div style="text-align: left;"> 
     <h2 style="border-bottom: 1px solid #d8dee4; color: #282d33;"> 개요 </h2>  
-    <div style="font-weight: 700; font-size: 15px; text-align: left; color: #282d33;"> <p>ROSA 환경에서 TEKTON을 이용하여 자동 배포를 구성했습니다. 예전 기술인 DeploymentConfig를 사용해보고 싶어 DC를 사용해 구성해봤습니다. </div> 
+    <div style="font-weight: 700; font-size: 15px; text-align: left; color: #282d33;"> <p>ROSA 환경에서 TEKTON을 이용하여 자동 배포를 구성했습니다. 예전 기술인 DeploymentConfig를 사용해 구성해봤습니다. </div> 
     </div>
     <br>
 
